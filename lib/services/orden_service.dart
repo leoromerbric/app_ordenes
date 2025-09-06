@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../models/orden_trabajo.dart';
 
 class OrdenService {
@@ -11,7 +13,7 @@ class OrdenService {
   }) async {
     // Simular delay de red
     await Future.delayed(const Duration(milliseconds: 800));
-    
+
     // Datos de ejemplo
     final ordenesEjemplo = [
       OrdenTrabajo(
@@ -225,7 +227,9 @@ class OrdenService {
       bool cumpleFiltros = true;
 
       if (pedidoCliente != null && pedidoCliente.isNotEmpty) {
-        cumpleFiltros &= orden.pedidoCliente.toLowerCase().contains(pedidoCliente.toLowerCase());
+        cumpleFiltros &= orden.pedidoCliente.toLowerCase().contains(
+          pedidoCliente.toLowerCase(),
+        );
       }
 
       if (posicion != null && posicion.isNotEmpty) {
@@ -233,12 +237,15 @@ class OrdenService {
       }
 
       if (centro != null && centro.isNotEmpty) {
-        cumpleFiltros &= orden.centro.toLowerCase().contains(centro.toLowerCase()) ||
-                        orden.planta.toLowerCase().contains(centro.toLowerCase());
+        cumpleFiltros &=
+            orden.centro.toLowerCase().contains(centro.toLowerCase()) ||
+            orden.planta.toLowerCase().contains(centro.toLowerCase());
       }
 
       if (puestoTrabajo != null && puestoTrabajo.isNotEmpty) {
-        cumpleFiltros &= orden.puestoTrabajo.toLowerCase().contains(puestoTrabajo.toLowerCase());
+        cumpleFiltros &= orden.puestoTrabajo.toLowerCase().contains(
+          puestoTrabajo.toLowerCase(),
+        );
       }
 
       if (estado != null) {
@@ -246,8 +253,13 @@ class OrdenService {
       }
 
       if (rangoFechas != null) {
-        cumpleFiltros &= orden.fechaInicio.isAfter(rangoFechas.start.subtract(const Duration(days: 1))) &&
-                        orden.fechaInicio.isBefore(rangoFechas.end.add(const Duration(days: 1)));
+        cumpleFiltros &=
+            orden.fechaInicio.isAfter(
+              rangoFechas.start.subtract(const Duration(days: 1)),
+            ) &&
+            orden.fechaInicio.isBefore(
+              rangoFechas.end.add(const Duration(days: 1)),
+            );
       }
 
       return cumpleFiltros;
@@ -261,30 +273,32 @@ class OrdenService {
     String? centro,
   }) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     final ordenes = await obtenerOrdenes();
     final operacionesDelDia = <Operacion>[];
-    
+
     for (final orden in ordenes) {
       for (final operacion in orden.operaciones) {
-        if (operacion.estado == EstadoOperacion.liberada || 
+        if (operacion.estado == EstadoOperacion.liberada ||
             operacion.estado == EstadoOperacion.enProceso) {
           operacionesDelDia.add(operacion);
         }
       }
     }
-    
+
     return operacionesDelDia;
   }
 
-  static Future<bool> confirmarOperacion(ConfirmacionOperacion confirmacion) async {
+  static Future<bool> confirmarOperacion(
+    ConfirmacionOperacion confirmacion,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 1000));
-    
+
     // Simular validaciones y confirmación
     if (confirmacion.cantidadTotal <= 0) {
       throw Exception('La cantidad total debe ser mayor a cero');
     }
-    
+
     // Simular éxito en la confirmación
     return true;
   }
